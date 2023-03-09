@@ -126,8 +126,10 @@ wrapper.appendChild(customSoundsWrapper)
 
 // add custom sound
 const addSound = document.querySelector('.addSound'),
-reorderRemove = document.querySelector('.reorderRemove')
+reorderRemove = document.querySelector('.reorderRemove'),
+soundCreatorWrapper = document.querySelector('.soundCreatorWrapper')
 
 addSound.addEventListener('click', (e) => {
-
+    soundCreatorWrapper.classList.add('active')
 })
+

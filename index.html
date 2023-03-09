@@ -42,11 +42,37 @@
     </nav>
 
     <div class="container">
-        <div class="soundCreatorWrapper active">
-            <input type="text" value="Title">
+        <div class="soundCreatorWrapper">
+            <input type="text" class="titleInput" placeholder="Sound Title">
             <div class="imgWrapper">
-                <img src="./production/images/Apple.png">
-                <input type="file">
+                <img src="./production/images/Apple.png" class="thumbnailUpload">
+
+                <label for="imgUpload">
+                    <i class="fa-solid fa-upload"></i>
+                    Thumbnail Image
+                </label>
+                <input type="file" id="imgUpload" class="thumbnailUploadInput">
+            </div>
+
+            <label for="soundUpload">
+                <i class="fa-solid fa-upload"></i>
+                Sound File
+            </label>
+            <input type="file" id="soundUpload" class="uploadSoundBtn">
+
+            <div class="btnWrapper">
+                <button class="testSoundBtn">
+                    <i class="fa-solid fa-play"></i>
+                    Test
+                </button>
+                <button class="saveSoundBtn">
+                    <i class="fa-solid fa-save"></i>
+                    Save
+                </button>
+                <button class="quitSoundBtn">
+                    <i class="fa-solid fa-x"></i>
+                    Quit
+                </button>
             </div>
         </div>
 
