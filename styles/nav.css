@@ -1,0 +1,69 @@
+nav {
+    position: fixed;
+    width: 25%;
+    background-color: #FF9A9A;
+    height: 100vh;
+    box-shadow: 0 0 2px 2px #0002;
+    z-index: 10000000000;
+    transition: 0.4s cubic-bezier(0.075, 0.82, 0.165, 1) left;
+}
+
+nav .navBtn {
+    aspect-ratio: 1;
+    width: 20%;
+    position: absolute;
+    left: 108%;
+    top: 2%;
+}
+
+nav.active {
+    left: -25%;
+}
+
+nav .navBtn .bar {
+    cursor: pointer;
+    background-color: #FF9A9A;
+    width: 100%;
+    height: 20%;
+    position: absolute;
+    border-radius: 1000px;
+    box-shadow: 0 0 2px 0 #0002;
+    transition: top 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
+                bottom 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
+                rotate 0.4s cubic-bezier(0.075, 0.82, 0.165, 1),
+                opacity 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.bar2 {
+    top: 50%;
+    translate: 0 -50%;
+}
+
+.bar3 {
+    bottom: 0;
+}
+
+nav .navBtn.active .bar {
+    box-shadow: none;
+}
+
+nav .navBtn.active {
+    filter: drop-shadow(0 0 2px #0002);
+}
+
+nav .navBtn.active .bar1 {
+    rotate: 45deg;
+    top: 50%;
+}
+
+nav .navBtn.active .bar2 {
+    opacity: 0;
+    user-select: none;
+    pointer-events: none;
+    z-index: -1;
+}
+
+nav .navBtn.active .bar3 {
+    rotate: -45deg;
+    top: 50%;
+}

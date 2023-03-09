@@ -4,13 +4,72 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="./styles/main.css">
     <link rel="stylesheet" href="./styles/apple_watch_responsive_1.2.css">
-    <script src="./js/main.js" type="module" defer></script>
+    <link rel="stylesheet" href="./styles/nav.css">
+
+    <script src="https://kit.fontawesome.com/5b301baa54.js" crossorigin="anonymous"></script>
+    <script src="./js/nav.js" defer></script>
+    <script src="https://raw.githack.com/hellothisisme123/French_Vanilla/main/French_Vanilla.js" defer ></script>
+    <script src="./js/main.js" defer></script>
+
+    
     <link rel="shortcut icon" href="./production/svg/Skull.svg" type="image/x-icon">
     <title>Document</title>
 </head>
 <body>
-    <div class="container"></div>
+    <nav>
+        <div class="navBtn active">
+            <div class="bar bar1"></div>
+            <div class="bar bar2"></div>
+            <div class="bar bar3"></div>
+        </div>
+        <div class="content">
+            <a href="#" class="navItem">
+                <i class="fa-brands fa-instagram"></i>
+                Lorem
+            </a>
+            <a href="#" class="navItem">
+                <i class="fa-brands fa-twitter"></i>
+                Lorem
+            </a>
+            <a href="#" class="navItem">
+                <i class="fa-brands fa-facebook"></i>
+                Lorem
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="wrapper">
+            <div class="soundItem innactive">
+                <h1>Mr Beast</h1>
+                <img src="./production/images/Mr_Beast.png" alt="">
+                <label class="timeInputLabel">
+                    <span class="timeInputLabelValue">10s</span>
+                    <input class="rangeInput" type="range" min="0" max="60" value="10">
+                </label>              
+                <div class="playWrapper">
+                    <button class="playBtn">Play</button>
+                    <button class="settingsBtn">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="addSoundsWrapper">
+                <button>
+                    Add custom sound
+                </button>
+
+                <h1>OR</h1>
+
+                <button>
+                    remove / Reorder <br> sounds
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
