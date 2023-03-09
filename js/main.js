@@ -39,7 +39,7 @@ class soundItem {
         })
 
         wrapper.appendChild(this.soundItemWrapper)
-        console.log(this)
+        // console.log(this)
     }
 
     changeInputValue(e) {
@@ -120,3 +120,14 @@ soundItems.push(windows10Noti)
 let customSoundsWrapper = wrapper.children[1].cloneNode(true) 
 wrapper.children[1].remove()
 wrapper.appendChild(customSoundsWrapper)
+
+
+
+
+// add custom sound
+const addSound = document.querySelector('.addSound'),
+reorderRemove = document.querySelector('.reorderRemove')
+
+addSound.addEventListener('click', (e) => {
+
+})

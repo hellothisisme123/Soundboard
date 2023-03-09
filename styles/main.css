@@ -67,8 +67,8 @@ html {
     justify-content: center;
     align-items: center;
     gap: 0.2rem;
-    user-select: all;
-    pointer-events: all;
+    user-select: none;
+    pointer-events: none;
 }
 
 .soundItem label span {
@@ -77,10 +77,27 @@ html {
 }
 
 .soundItem label input[type="range"] {
-    
     flex-grow: 1;
     user-select: all;
+    pointer-events: all;
+    background-color: #FF9A9A;
 }
+
+.soundItem label input[type="range"]::-webkit-slider-runnable-track,
+.soundItem label input[type="range"]::-moz-range-track {
+    background: #EA5959;
+    border-radius: 1000px;
+    border: 1px solid #EA5959;
+}
+
+.soundItem label input[type="range"]::-moz-range-thumb,
+.soundItem label input[type="range"]::-webkit-slider-thumb {
+    background-color: #EA5959;
+    border: none;
+    scale: 1.25;
+}
+
+
 
 .playWrapper {
     display: flex;
@@ -97,7 +114,12 @@ html {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 1.15rem;
+    font-size: 1.15rem;    
+    transition: scale 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.soundItem button:active {
+    scale: 1.1;
 }
 
 .soundItem button:hover {
@@ -110,6 +132,10 @@ html {
     background-color: transparent;
     font-size: 16px;
     font-weight: 900;
+}
+
+.soundItem .settingsBtn:active {
+    scale: 1.25;
 }
 
 .soundItem .settingsBtn i {
@@ -138,17 +164,67 @@ html {
     font-size: 1.5rem;
     font-weight: 800;
     cursor: pointer;
-    transition: translate 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    /* transition: ; */
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: ;
+    transition: 0.4s scale cubic-bezier(0.075, 0.82, 0.165, 1),
+    translate 0.2s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.addSoundsWrapper button:active {
+    scale: 1.1;
 }
 
 .addSoundsWrapper button:hover {
     filter: brightness(1.1);
-    translate: 0 -16px;
+    translate: 0 -8px;
 }
+
+
+
+
+
+/* sound creator */
+.soundCreatorWrapper {
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 1000;
+    background-color: #FF9A9A;
+    box-shadow: 0 0 4px 2px #EA5959;
+    padding: 16px;
+    width: 75%;
+    display: flex;
+    height: 70%;
+    border-radius: 8px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.soundCreatorWrapper.active {
+    top: 50%;
+}
+
+.soundCreatorWrapper .imgWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    max-height: 40vh;
+    background-color: red;
+}
+
+.soundCreatorWrapper .imgWrapper img {
+    max-height: 100%;
+    object-fit: contain;
+}
+
+
+
+
+
+
 
 @media screen and (width <= 800px) {
     .soundItem {
