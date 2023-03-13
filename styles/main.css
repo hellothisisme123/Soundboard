@@ -264,7 +264,27 @@ html {
     font-size: 1.25rem;
 }
 
+.wrongDataError {
+    position: fixed;
+    animation: fade-up 1s linear;
+    left: 50%;
+    bottom: 100%;
+    font-size: 1.5rem;
+    translate: -50% 0;
+    z-index: 1000;
+    font-weight: 800;
+}
 
+@keyframes fade-up {
+    0% {
+        bottom: 0%;
+        opacity: 1;
+    }
+    100% {
+        bottom: 10%;
+        opacity: 0;
+    }
+}
 
 
 

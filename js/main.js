@@ -72,7 +72,6 @@ class soundItem {
 }
 
 
-let soundItems = []
 
 let appleNoti = new soundItem({
     'min': 0,
@@ -110,10 +109,11 @@ let windowsXpError = new soundItem({
     'audioPath': '../production/sounds/windowsXPError.mp3'
 })
 
+let soundItems = []
 soundItems.push(appleNoti)
 soundItems.push(androidNoti)
 soundItems.push(windows10Noti)
-
+soundItems.push(windowsXpError)
 
 
 // reorders to add cutom new sounds wrapper
@@ -127,9 +127,110 @@ wrapper.appendChild(customSoundsWrapper)
 // add custom sound
 const addSound = document.querySelector('.addSound'),
 reorderRemove = document.querySelector('.reorderRemove'),
-soundCreatorWrapper = document.querySelector('.soundCreatorWrapper')
+soundCreatorWrapper = document.querySelector('.soundCreatorWrapper'),
+quitSoundBtn = document.querySelector('.quitSoundBtn'),
+uploadSoundInput = document.querySelector('.uploadSoundInput'),
+thumbnailUploadInput = document.querySelector('.thumbnailUploadInput'),
+thumbnailImg = document.querySelector('.thumbnailImg'),
+titleInput = document.querySelector('.titleInput'),
+testSoundBtn = document.querySelector('.testSoundBtn'),
+saveSoundBtn = document.querySelector('.saveSoundBtn'),
+addSoundsWrapper = document.querySelector('.addSoundsWrapper')
 
+let newSoundItem = {
+    'title': '',
+    'img': '',
+    'audio': ''
+}
 addSound.addEventListener('click', (e) => {
+    titleInput.value = ''
+    newSoundItem = {
+        'title': '',
+        'img': '',
+        'audio': ''
+    }
+    thumbnailImg.src = './production/images/apple.png'
     soundCreatorWrapper.classList.add('active')
 })
 
+quitSoundBtn.addEventListener('click', (e) => {
+    soundCreatorWrapper.classList.remove('active')
+})
+
+titleInput.addEventListener('change', (e) => {
+    newSoundItem.title = e.target.value
+})
+
+thumbnailUploadInput.addEventListener('change', (e) => {
+    const fileReader = new FileReader()
+
+    // converts to base64 as result
+    fileReader.readAsDataURL(e.target.files[0])
+    fileReader.onload = () => {
+        // sets the src of the image to the base64 image code
+        // the image was already there but didn't render since there was no src
+        newSoundItem.img = fileReader.result
+        thumbnailImg.src = newSoundItem.img
+    }
+    fileReader.onerror = (err) => {
+        console.error(err)
+    }
+})
+
+uploadSoundInput.addEventListener('change', (e) => {
+    const fileReader = new FileReader()
+
+    // converts to base64 as result
+    fileReader.readAsDataURL(e.target.files[0])
+    fileReader.onload = () => {
+        // sets the src of the image to the base64 image code
+        // the image was already there but didn't render since there was no src
+
+        newSoundItem.audio = fileReader.result
+        let newSound = new Audio(newSoundItem.audio)
+        newSound.cloneNode(1).play()
+    }
+    fileReader.onerror = (err) => {
+        console.error(err)
+    }
+})
+
+testSoundBtn.addEventListener('click', (e) => {
+    // tests the sound by playing it
+    let tmp = new Audio(newSoundItem.audio)
+    tmp.cloneNode(1).play()
+})
+
+saveSoundBtn.addEventListener('click', (e) => {
+    // data inputted incorectly
+    if (
+        newSoundItem.title == '' ||
+        newSoundItem.img == '' ||
+        newSoundItem.audio == ''
+    ) {
+        let wrongDataError = document.createElement('div')
+        wrongDataError.classList.add('wrongDataError')
+        wrongDataError.innerHTML = 'You must insert all data (title, image, audio)'
+        wrapper.appendChild(wrongDataError)
+        setTimeout(() => {
+            wrongDataError.remove()
+        }, 1000);
+        return
+    }
+
+    // pushes the new soundItem into the soundItems
+    soundItems.push(new soundItem({
+        'min': 0,
+        'max': 60,
+        'default': 0,
+        'name': newSoundItem.title,
+        'imgPath': newSoundItem.img,
+        'audioPath': newSoundItem.audio
+    }))
+    soundCreatorWrapper.classList.remove('active')
+
+    // reorders to add cutom new sounds wrapper
+    let customSoundsWrapper = addSoundsWrapper.cloneNode(true) 
+    addSoundsWrapper.remove()
+    wrapper.appendChild(customSoundsWrapper)
+})
