@@ -78,7 +78,7 @@ class soundItem {
 //     'max': 60,
 //     'default': 0,
 //     'title': 'Apple Notification',
-//     'imgPath': './production/images/apple.png',
+//     'imgPath': './production/images/Apple.png',
 //     'audioPath': '../production/sounds/appleNoti.mp3'
 // })
 
@@ -171,11 +171,17 @@ request.onsuccess = () => {
                 'audio': '../production/sounds/windowsXPError.mp3',
             })
         }
-        // HERE ITS BREAKING
-        let allItemsWithDefaults = titleIndex.getAll()
-        allItemsWithDefaults.onsuccess = () => {
-            console.log(allItemsWithDefaults.result)
-            allItemsWithDefaults.result.forEach(item => {
+
+        // recall the database to get the new information since it might've just added new items
+        const db2 = request.result
+        const transaction2 = db2.transaction('sounds', 'readwrite')
+        const store2 = transaction2.objectStore('sounds')
+        const titleIndex2 = store2.index('title')
+        let allItems2 = titleIndex2.getAll()
+        allItems2.onsuccess = () => {
+            console.log(allItems2.result)
+            // pushes every sound item from the database and code into the real site as an actual item
+            allItems2.result.forEach(item => {
                 soundItems.push(new soundItem({
                     'min': 0,
                     'max': 60,
@@ -186,10 +192,10 @@ request.onsuccess = () => {
                 }))
             })
     
+            // reorders the add and remove and reorder sounds buttons
             wrapper.appendChild(addSoundsWrapper)
         }
-    }
-    
+    } 
 }
 
 
@@ -223,7 +229,7 @@ addSound.addEventListener('click', (e) => {
         'img': '',
         'audio': ''
     }
-    thumbnailImg.src = './production/images/apple.png'
+    thumbnailImg.src = './production/images/Apple.png'
     soundCreatorWrapper.classList.add('active')
 })
 
