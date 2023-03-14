@@ -140,7 +140,6 @@ request.onsuccess = () => {
 
     let allItems = titleIndex.getAll()
     allItems.onsuccess = () => {
-        console.log(allItems.result.length)
         if (allItems.result.length == 0) {
             // indexedDB
             const db = request.result
@@ -179,7 +178,6 @@ request.onsuccess = () => {
         const titleIndex2 = store2.index('title')
         let allItems2 = titleIndex2.getAll()
         allItems2.onsuccess = () => {
-            console.log(allItems2.result)
             // pushes every sound item from the database and code into the real site as an actual item
             allItems2.result.forEach(item => {
                 soundItems.push(new soundItem({

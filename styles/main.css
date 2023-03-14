@@ -294,8 +294,26 @@ html {
 
 
 
+@media screen and (width <= 1000px) {
+    .soundItem {
+        width: 30%;
+    }
+}
+
 @media screen and (width <= 800px) {
     .soundItem {
         width: 40%;
+    }
+}
+
+@media screen and (width <= 550px) {
+    .soundItem {
+        width: 70%;
+    }
+}
+
+@media screen and (width <= 350px) {
+    .soundItem {
+        width: 80%;
     }
 }
