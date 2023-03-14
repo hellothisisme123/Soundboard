@@ -5,14 +5,14 @@ class soundItem {
         this.min = settings.min
         this.max = settings.max
         this.default = settings.default
-        this.name = settings.name
+        this.title = settings.title
         this.imgPath = settings.imgPath
         this.currentTimeDelay = settings.default
         this.audioPath = settings.audioPath
         this.audio = new Audio(this.audioPath)
         
         this.soundItemWrapper = document.querySelector('.soundItem.innactive').cloneNode(1)
-        this.title = this.soundItemWrapper.querySelector('h1')
+        this.heading = this.soundItemWrapper.querySelector('h1')
         this.delayInput = this.soundItemWrapper.querySelector('.rangeInput')
         this.delayLabel = this.soundItemWrapper.querySelector('.timeInputLabel')
         this.delayLabelValue = this.soundItemWrapper.querySelector('.timeInputLabelValue')
@@ -25,10 +25,10 @@ class soundItem {
         this.delayInput.max = this.max
         this.delayInput.value = this.default
         this.delayLabelValue.innerText = `${this.default}s`
-        this.title.innerText = this.name
+        this.heading.innerText = this.title
         this.soundItemWrapper.classList.remove('innactive')
         this.img.src = this.imgPath
-        this.img.alt = this.name
+        this.img.alt = this.title
 
         this.delayInput.addEventListener('change', (e) => {
             this.changeInputValue(e)
@@ -73,53 +73,124 @@ class soundItem {
 
 
 
-let appleNoti = new soundItem({
-    'min': 0,
-    'max': 60,
-    'default': 0,
-    'name': 'Apple Notification',
-    'imgPath': './production/images/apple.png',
-    'audioPath': '../production/sounds/appleNoti.mp3'
-})
+// let appleNoti = new soundItem({
+//     'min': 0,
+//     'max': 60,
+//     'default': 0,
+//     'title': 'Apple Notification',
+//     'imgPath': './production/images/apple.png',
+//     'audioPath': '../production/sounds/appleNoti.mp3'
+// })
 
-let androidNoti = new soundItem({
-    'min': 0,
-    'max': 60,
-    'default': 0,
-    'name': 'Android Notification',
-    'imgPath': './production/svg/Android_robot.svg',
-    'audioPath': '../production/sounds/samsungNoti.mp3'
-})
+// let androidNoti = new soundItem({
+//     'min': 0,
+//     'max': 60,
+//     'default': 0,
+//     'title': 'Android Notification',
+//     'imgPath': './production/svg/Android_robot.svg',
+//     'audioPath': '../production/sounds/samsungNoti.mp3'
+// })
 
-let windows10Noti = new soundItem({
-    'min': 0,
-    'max': 60,
-    'default': 0,
-    'name': 'Windows 10 Notification',
-    'imgPath': './production/svg/windowsLogo.svg',
-    'audioPath': '../production/sounds/windows10Noti.mp3'
-})
+// let windows10Noti = new soundItem({
+//     'min': 0,
+//     'max': 60,
+//     'default': 0,
+//     'title': 'Windows 10 Notification',
+//     'imgPath': './production/svg/windowsLogo.svg',
+//     'audioPath': '../production/sounds/windows10Noti.mp3'
+// })
 
-let windowsXpError = new soundItem({
-    'min': 0,
-    'max': 60,
-    'default': 0,
-    'name': 'Windows XP Error',
-    'imgPath': './production/images/windowsXPLogo.png',
-    'audioPath': '../production/sounds/windowsXPError.mp3'
-})
+// let windowsXpError = new soundItem({
+//     'min': 0,
+//     'max': 60,
+//     'default': 0,
+//     'title': 'Windows XP Error',
+//     'imgPath': './production/images/windowsXPLogo.png',
+//     'audioPath': '../production/sounds/windowsXPError.mp3'
+// })
 
+
+
+// indexedDB
 let soundItems = []
-soundItems.push(appleNoti)
-soundItems.push(androidNoti)
-soundItems.push(windows10Noti)
-soundItems.push(windowsXpError)
 
+const indexedDB = window.indexedDB
+const request = indexedDB.open("soundboardDB", 2)
 
-// reorders to add cutom new sounds wrapper
-let customSoundsWrapper = wrapper.children[1].cloneNode(true) 
-wrapper.children[1].remove()
-wrapper.appendChild(customSoundsWrapper)
+request.onerror = (err) => {
+    console.error(err)
+}
+
+request.onupgradeneeded = () => {
+    console.log('database upgraded succesfully');
+    const db = request.result
+    const store = db.createObjectStore('sounds', {keyPath: 'title'})
+    
+    store.createIndex("title", ['title'], {unique: false})
+}
+
+request.onsuccess = () => {
+    console.log('database successfully loaded')
+    const db = request.result
+    const transaction = db.transaction('sounds', 'readwrite')
+    const store = transaction.objectStore('sounds')
+    
+    const titleIndex = store.index('title')
+    // pulls items from database and pushes them to soundItems
+
+    let allItems = titleIndex.getAll()
+    allItems.onsuccess = () => {
+        console.log(allItems.result.length)
+        if (allItems.result.length == 0) {
+            // indexedDB
+            const db = request.result
+            const transaction = db.transaction('sounds', 'readwrite')
+            const store = transaction.objectStore('sounds')
+
+            store.put({
+                'title': 'Apple Notification',
+                'img': './production/images/Apple.png',
+                'audio': '../production/sounds/appleNoti.mp3'
+            })
+
+            store.put({
+                'title': 'Android Notification',
+                'img': './production/svg/Android_robot.svg',
+                'audio': '../production/sounds/samsungNoti.mp3',
+            })
+
+            store.put({
+                'title': 'Windows 10 Notification',
+                'img': './production/svg/windowsLogo.svg',
+                'audio': '../production/sounds/windows10Noti.mp3',
+            })
+
+            store.put({
+                'title': 'Windows XP Error',
+                'img': './production/images/windowsXPLogo.png',
+                'audio': '../production/sounds/windowsXPError.mp3',
+            })
+        }
+        // HERE ITS BREAKING
+        let allItemsWithDefaults = titleIndex.getAll()
+        allItemsWithDefaults.onsuccess = () => {
+            console.log(allItemsWithDefaults.result)
+            allItemsWithDefaults.result.forEach(item => {
+                soundItems.push(new soundItem({
+                    'min': 0,
+                    'max': 60,
+                    'default': 0,
+                    'title': item.title,
+                    'imgPath': item.img,
+                    'audioPath': item.audio
+                }))
+            })
+    
+            wrapper.appendChild(addSoundsWrapper)
+        }
+    }
+    
+}
 
 
 
@@ -136,6 +207,9 @@ titleInput = document.querySelector('.titleInput'),
 testSoundBtn = document.querySelector('.testSoundBtn'),
 saveSoundBtn = document.querySelector('.saveSoundBtn'),
 addSoundsWrapper = document.querySelector('.addSoundsWrapper')
+
+// reorders to add cutom new sounds wrapper
+wrapper.appendChild(addSoundsWrapper)
 
 let newSoundItem = {
     'title': '',
@@ -158,6 +232,9 @@ quitSoundBtn.addEventListener('click', (e) => {
 })
 
 titleInput.addEventListener('change', (e) => {
+    if (e.target.value.length > 50) {
+        e.target.value = e.target.value.slice(0, -(e.target.value.length - 50))
+    }
     newSoundItem.title = e.target.value
 })
 
@@ -223,14 +300,36 @@ saveSoundBtn.addEventListener('click', (e) => {
         'min': 0,
         'max': 60,
         'default': 0,
-        'name': newSoundItem.title,
+        'title': newSoundItem.title,
         'imgPath': newSoundItem.img,
         'audioPath': newSoundItem.audio
     }))
     soundCreatorWrapper.classList.remove('active')
 
     // reorders to add cutom new sounds wrapper
-    let customSoundsWrapper = addSoundsWrapper.cloneNode(true) 
-    addSoundsWrapper.remove()
-    wrapper.appendChild(customSoundsWrapper)
+    wrapper.appendChild(addSoundsWrapper)
+
+
+
+    // indexedDB
+    const db = request.result
+    const transaction = db.transaction('sounds', 'readwrite')
+    const store = transaction.objectStore('sounds')
+
+    soundItems.forEach(item => {
+        item = {
+            'img': item.imgPath,
+            'title': item.title,
+            'audio': item.audioPath
+        }
+        store.put(item)
+
+        store.onsuccess = () => {
+            console.log(store.result)
+        }
+    })
+    // store.put(newSoundItem)
+
+
+
 })
