@@ -116,24 +116,28 @@ request.onsuccess = () => {
                 'title': 'Apple Notification',
                 'img': './production/images/Apple.png',
                 'audio': '../production/sounds/appleNoti.mp3',
+                'order': 1
             })
 
             store.put({
                 'title': 'Android Notification',
                 'img': './production/svg/Android_robot.svg',
                 'audio': '../production/sounds/samsungNoti.mp3',
+                'order': 2
             })
 
             store.put({
                 'title': 'Windows 10 Notification',
                 'img': './production/svg/windowsLogo.svg',
                 'audio': '../production/sounds/windows10Noti.mp3',
+                'order': 3
             })
 
             store.put({
                 'title': 'Windows XP Error',
                 'img': './production/images/windowsXPLogo.png',
                 'audio': '../production/sounds/windowsXPError.mp3',
+                'order': 4
             })
         }
 
@@ -145,7 +149,10 @@ request.onsuccess = () => {
         let allItems2 = titleIndex2.getAll()
         allItems2.onsuccess = () => {
             // pushes every sound item from the database and code into the real site as an actual item
-            allItems2.result.forEach(item => {
+            let sortedItems = allItems2.result
+            sortedItems = sortedItems.sort((a, b) => a.order - b.order)
+
+            sortedItems.forEach(item => {
                 soundItems.push(new soundItem({
                     'min': 0,
                     'max': 60,
@@ -300,29 +307,27 @@ saveSoundBtn.addEventListener('click', (e) => {
     const transaction = db.transaction('sounds', 'readwrite')
     const store = transaction.objectStore('sounds')
 
-    soundItems.forEach(item => {
-        item = {
-            'img': item.imgPath,
-            'title': item.title,
-            'audio': item.audioPath
-        }
-        store.put(item)
-
-        store.onsuccess = () => {
-            console.log(store.result)
-        }
-    })
-    // store.put(newSoundItem)
+    let allItems = store.getAll()
+    allItems.onsuccess = () => {
+        soundItems.forEach(item => {
+            item = {
+                'img': item.imgPath,
+                'title': item.title,
+                'audio': item.audioPath,
+                'order': allItems.result.length + 1
+            }
+            store.put(item)
+    
+            store.onsuccess = () => {
+                console.log(store.result)
+            }
+        })
+    }
 })
 
 
 
 
-
-// reorder sounds
-// const removeReorderSoundBtn = document.querySelector('.reorderRemove'),
-// soundReorderWrapper = document.querySelector('.soundReorderWrapper'),
-// reorderX = soundReorderWrapper.querySelector('.xBtn')
 
 reorderX.addEventListener('click', (e) => {
     soundReorderWrapper.classList.remove('active')
@@ -365,7 +370,6 @@ class soundReorderThumb {
     getDragAfterElement = (container, y) => {
         // https://www.youtube.com/watch?v=jfYWwQrtzzY&ab_channel=WebDevSimplified
         const draggableElements = [...container.querySelectorAll('.soundItemThumb:not(.hidden):not(.dragging)')]
-        // console.log(draggableElements)
 
         return draggableElements.reduce((closest, child) => {
             const box = child.getBoundingClientRect()
@@ -380,10 +384,8 @@ class soundReorderThumb {
 
     dragOver = (e) => {
         e.preventDefault();
-        // console.log(e)
 
         const afterElement = this.getDragAfterElement(this.newReorderThumb.parentElement, e.clientY)
-        // console.log(afterElement)
 
         const dragging = this.newReorderThumb.parentElement.querySelector('.dragging')
 
@@ -394,14 +396,11 @@ class soundReorderThumb {
         } else {
             this.newReorderThumb.parentElement.insertBefore(dragging, afterElement)
         }
-
-
     }
 
     dragStart = (e) => {
         console.log('dragstart');
-        // e.dataTransfer.setDragImage(this.newReorderThumb, this.thumbRect.width / 2, this.thumbRect.height / 2)
-        // e.dataTransfer.setDragImage(this.newReorderThumb, this.thumbRect.width / 2, this.thumbRect.height / 2)
+        e.dataTransfer.setDragImage(this.newReorderThumb, this.thumbRect.width / 2, this.thumbRect.height / 2)
 
         this.newReorderThumb.classList.add('dragging')
     }
@@ -412,11 +411,40 @@ class soundReorderThumb {
     }
 
     removeItem = () => {
+        // main list item
+        let mainSoundItem = soundItems.filter(x => x.title == this.title)
+
         console.log('remove item')
         // indexedDB variables
         const db = request.result
         const transaction = db.transaction('sounds', 'readwrite')
         const store = transaction.objectStore('sounds')
+
+        // changes the order of all items ahead of it
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
+        // WORKING HERE HERE HERE
 
         // removes it from the database
         store.delete(this.title)
@@ -425,54 +453,9 @@ class soundReorderThumb {
         this.newReorderThumb.remove()
 
         // removes it from the main list
-        let mainSoundItem = soundItems.filter(x => x.title == this.title)
         mainSoundItem[0].soundItemWrapper.remove();
 
         // removes it from the soundItems array
-        console.log([...soundItems])
         delete soundItems[soundItems.indexOf(mainSoundItem[0])]
-        console.log(soundItems)
     }
 }
-
-
-// ||-_-| Original Failed Attempt |-_-||\\
-// removeReorderSoundBtn.addEventListener('click', (e) => {
-//     soundItemDivs = document.querySelectorAll('.soundItem')
-//     soundItemDivs.forEach(item => {
-//         item.classList.toggle('movable')
-
-//         let isMoveable = Array.from(item.classList).filter(x => x == 'movable')[0]
-//         if (isMoveable) {
-// -            item.setAttribute('draggable', 'true')
-//             console.log('is moveable')
-//         } else {
-//             item.setAttribute('draggable', 'false')
-//         }
-
-
-
-//         item.addEventListener('dragstart', e => {
-//             console.log('dragstart')
-//             console.log(e)
-             
-//         })
-
-//         item.addEventListener('dragend', (e) => {
-//             console.log('dragend')
-
-//         })
-
-//         const contentWrapper = item.parentElement
-//         contentWrapper.addEventListener('dragover', e => {
-//             e.preventDefault();
-
-//             let closestElement = getClosestElement(e.clientX, e.clientY, contentWrapper)
-//             // console.log(e)
-
-
-//         })
-
-
-//     })
-// })
