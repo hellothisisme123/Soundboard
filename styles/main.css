@@ -44,6 +44,155 @@ html {
     user-select: none;
 }
 
+/* new reorder idea */
+.soundReorderWrapper {
+    position: fixed;
+    width: 75%;
+    max-width: 750px;
+    height: 85%;
+    top: -100%;
+    translate: 0 -50%;
+    z-index: 1000;
+    border-radius: 8px;
+    background-color: #FF9A9A;
+    box-shadow: 0 0 4px 2px #EA5959;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    transition: top 0.75s cubic-bezier(0.165, 0.84, 0.44, 1);
+    overflow-y: scroll;
+}
+
+.soundReorderWrapper.active {
+    top: 50%;
+}
+
+.soundReorderWrapper .xBtn {
+    position: absolute;
+    right: 1.5vw;
+    top: 1.5vw;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.soundReorderWrapper .xBtn:hover i {
+    color: #EA5959;
+}
+
+.soundReorderWrapper h1 {
+    font-size: 2.5rem;
+}
+
+.soundReorderWrapper .soundItemThumb {
+    display: flex;
+    min-height: 50px;
+    height: 50px;
+    max-height: 50px;
+    width: 100%;
+    align-items: center;
+    padding: 4px;
+    gap: 8px;
+}
+
+.soundReorderWrapper .soundItemThumb.hidden {
+    display: none;
+}
+
+.soundReorderWrapper .soundItemThumb:hover {
+    background-color: #EA5959;
+}
+
+.soundReorderWrapper .soundItemThumb.dragging {
+    background-color: #EA5959;
+    opacity: 0.5;
+}
+
+.soundReorderWrapper .soundItemThumb p {
+    font-size: 1.5rem;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.soundReorderWrapper .soundItemThumb .imgWrapper {
+    height: 100%;
+    aspect-ratio: 1;
+}
+
+.soundReorderWrapper .soundItemThumb .imgWrapper img {
+    /* max-width: 100%; */
+    max-height: 100%;
+    object-position: center;
+}
+
+.soundReorderWrapper .soundItemThumb .drag {
+    height: 100%;
+    aspect-ratio: 1;
+    font-size: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.soundReorderWrapper .soundItemThumb .remove {
+    height: 100%;
+    aspect-ratio: 1;
+    font-size: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.soundReorderWrapper .soundItemThumb .drag:hover i {
+    color: #FF9A9A;
+}
+
+.soundReorderWrapper .soundItemThumb .remove:hover i {
+    color: #FF9A9A;
+}
+
+    
+
+/* original reorder idea */
+/* 
+.soundItem.movable {
+    animation: pulsing 2s linear infinite;
+}
+
+@keyframes pulsing {
+    0% {
+        filter: drop-shadow(0 0 1px #fff9);
+    }
+    50% {
+        filter: drop-shadow(0 0 3px #fff9);
+    }
+    100% {
+        filter: drop-shadow(0 0 1px #fff9);
+    }
+}
+
+@keyframes flutter {
+    0% {
+        translate: -1px -1px;
+    }
+    25% {
+        translate: 0px -0.5px;
+    }
+    50% {
+        translate: 1px 1px;
+    }
+    75% {
+        translate: -0.5px 0;
+    }
+    100% {
+        translate: -1px -1px;
+    }
+} */
+
 .soundItem h1 {
     width: 100%;
     word-wrap: break-word;
@@ -104,6 +253,9 @@ html {
 }
 
 
+.playWrapperSpacer {
+    flex-grow: 1;
+}
 
 .playWrapper {
     display: flex;
@@ -155,6 +307,7 @@ html {
     align-items: center;
     justify-content: center;
     gap: 16px;
+    width: 20%;
 }
 
 .addSoundsWrapper button {
@@ -231,6 +384,11 @@ html {
     max-height: 30vh;
     gap: 8px;
     align-items: center;
+}
+
+.soundCreatorWrapper .imgWrapper img {
+    pointer-events: none;
+    user-select: none;
 }
 
 .soundCreatorWrapper label {

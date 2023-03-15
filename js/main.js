@@ -71,44 +71,10 @@ class soundItem {
     }
 }
 
-
-
-// let appleNoti = new soundItem({
-//     'min': 0,
-//     'max': 60,
-//     'default': 0,
-//     'title': 'Apple Notification',
-//     'imgPath': './production/images/Apple.png',
-//     'audioPath': '../production/sounds/appleNoti.mp3'
-// })
-
-// let androidNoti = new soundItem({
-//     'min': 0,
-//     'max': 60,
-//     'default': 0,
-//     'title': 'Android Notification',
-//     'imgPath': './production/svg/Android_robot.svg',
-//     'audioPath': '../production/sounds/samsungNoti.mp3'
-// })
-
-// let windows10Noti = new soundItem({
-//     'min': 0,
-//     'max': 60,
-//     'default': 0,
-//     'title': 'Windows 10 Notification',
-//     'imgPath': './production/svg/windowsLogo.svg',
-//     'audioPath': '../production/sounds/windows10Noti.mp3'
-// })
-
-// let windowsXpError = new soundItem({
-//     'min': 0,
-//     'max': 60,
-//     'default': 0,
-//     'title': 'Windows XP Error',
-//     'imgPath': './production/images/windowsXPLogo.png',
-//     'audioPath': '../production/sounds/windowsXPError.mp3'
-// })
-
+// reorder sounds variables
+const removeReorderSoundBtn = document.querySelector('.reorderRemove'),
+soundReorderWrapper = document.querySelector('.soundReorderWrapper'),
+reorderX = soundReorderWrapper.querySelector('.xBtn')
 
 
 // indexedDB
@@ -149,7 +115,7 @@ request.onsuccess = () => {
             store.put({
                 'title': 'Apple Notification',
                 'img': './production/images/Apple.png',
-                'audio': '../production/sounds/appleNoti.mp3'
+                'audio': '../production/sounds/appleNoti.mp3',
             })
 
             store.put({
@@ -188,6 +154,13 @@ request.onsuccess = () => {
                     'imgPath': item.img,
                     'audioPath': item.audio
                 }))
+            })
+
+            soundItems.forEach(item => {
+                new soundReorderThumb({
+                    'img': item.imgPath,
+                    'title': item.title 
+                })
             })
     
             // reorders the add and remove and reorder sounds buttons
@@ -313,9 +286,16 @@ saveSoundBtn.addEventListener('click', (e) => {
     // reorders to add cutom new sounds wrapper
     wrapper.appendChild(addSoundsWrapper)
 
+    
+    // adds the item into the reorder thumbs
+    new soundReorderThumb({
+        'img': newSoundItem.imgPath,
+        'title': newSoundItem.title
+    })
 
 
-    // indexedDB
+
+    // pushes item into indexedDB
     const db = request.result
     const transaction = db.transaction('sounds', 'readwrite')
     const store = transaction.objectStore('sounds')
@@ -333,7 +313,166 @@ saveSoundBtn.addEventListener('click', (e) => {
         }
     })
     // store.put(newSoundItem)
+})
 
 
+
+
+
+// reorder sounds
+// const removeReorderSoundBtn = document.querySelector('.reorderRemove'),
+// soundReorderWrapper = document.querySelector('.soundReorderWrapper'),
+// reorderX = soundReorderWrapper.querySelector('.xBtn')
+
+reorderX.addEventListener('click', (e) => {
+    soundReorderWrapper.classList.remove('active')
+})
+
+removeReorderSoundBtn.addEventListener('click', (e) => {
+    soundReorderWrapper.classList.toggle('active')
 
 })
+
+class soundReorderThumb {
+    constructor (settings) {
+        this.img = settings.img
+        this.title = settings.title
+        
+        // adds it to the reorder wrapper
+        this.newReorderThumb = document.querySelector('.soundReorderWrapper .soundItemThumb.hidden').cloneNode(true)
+
+        
+        let headerP = this.newReorderThumb.querySelector('p'),
+        img = this.newReorderThumb.querySelector('img')
+        
+        headerP.innerHTML = this.title
+        img.src = this.img
+        img.alt = this.title
+        
+        this.newReorderThumb.classList.remove('hidden')
+        soundReorderWrapper.appendChild(this.newReorderThumb)
+        this.thumbRect = this.newReorderThumb.getBoundingClientRect()
+
+        this.closeBtn = this.newReorderThumb.querySelector('.remove')
+        this.closeBtn.addEventListener('click', this.removeItem)
+
+        this.dragBtn = this.newReorderThumb.querySelector('.drag')
+        this.dragBtn.addEventListener('dragstart', this.dragStart)
+        this.dragBtn.addEventListener('dragend', this.dragEnd)
+        this.newReorderThumb.parentElement.addEventListener('dragover', this.dragOver)
+    }
+
+    getDragAfterElement = (container, y) => {
+        // https://www.youtube.com/watch?v=jfYWwQrtzzY&ab_channel=WebDevSimplified
+        const draggableElements = [...container.querySelectorAll('.soundItemThumb:not(.hidden):not(.dragging)')]
+        // console.log(draggableElements)
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect()
+            const offset = y - box.top - box.height / 2
+            if (offset < 0 && offset > closest.offset) {
+                return {offset: offset, element: child}
+            } else {
+                return closest
+            }
+        }, {offset: Number.NEGATIVE_INFINITY}).element
+    }
+
+    dragOver = (e) => {
+        e.preventDefault();
+        // console.log(e)
+
+        const afterElement = this.getDragAfterElement(this.newReorderThumb.parentElement, e.clientY)
+        // console.log(afterElement)
+
+        const dragging = this.newReorderThumb.parentElement.querySelector('.dragging')
+
+        console.log(this.newReorderThumb)
+
+        if (afterElement == null) {
+            this.newReorderThumb.parentElement.appendChild(dragging)    
+        } else {
+            this.newReorderThumb.parentElement.insertBefore(dragging, afterElement)
+        }
+
+
+    }
+
+    dragStart = (e) => {
+        console.log('dragstart');
+        // e.dataTransfer.setDragImage(this.newReorderThumb, this.thumbRect.width / 2, this.thumbRect.height / 2)
+        // e.dataTransfer.setDragImage(this.newReorderThumb, this.thumbRect.width / 2, this.thumbRect.height / 2)
+
+        this.newReorderThumb.classList.add('dragging')
+    }
+
+    dragEnd = (e) => {
+        console.log('dragend');
+        this.newReorderThumb.classList.remove('dragging')
+    }
+
+    removeItem = () => {
+        console.log('remove item')
+        // indexedDB variables
+        const db = request.result
+        const transaction = db.transaction('sounds', 'readwrite')
+        const store = transaction.objectStore('sounds')
+
+        // removes it from the database
+        store.delete(this.title)
+
+        // removes it from the reorder list
+        this.newReorderThumb.remove()
+
+        // removes it from the main list
+        let mainSoundItem = soundItems.filter(x => x.title == this.title)
+        mainSoundItem[0].soundItemWrapper.remove();
+
+        // removes it from the soundItems array
+        console.log([...soundItems])
+        delete soundItems[soundItems.indexOf(mainSoundItem[0])]
+        console.log(soundItems)
+    }
+}
+
+
+// ||-_-| Original Failed Attempt |-_-||\\
+// removeReorderSoundBtn.addEventListener('click', (e) => {
+//     soundItemDivs = document.querySelectorAll('.soundItem')
+//     soundItemDivs.forEach(item => {
+//         item.classList.toggle('movable')
+
+//         let isMoveable = Array.from(item.classList).filter(x => x == 'movable')[0]
+//         if (isMoveable) {
+// -            item.setAttribute('draggable', 'true')
+//             console.log('is moveable')
+//         } else {
+//             item.setAttribute('draggable', 'false')
+//         }
+
+
+
+//         item.addEventListener('dragstart', e => {
+//             console.log('dragstart')
+//             console.log(e)
+             
+//         })
+
+//         item.addEventListener('dragend', (e) => {
+//             console.log('dragend')
+
+//         })
+
+//         const contentWrapper = item.parentElement
+//         contentWrapper.addEventListener('dragover', e => {
+//             e.preventDefault();
+
+//             let closestElement = getClosestElement(e.clientX, e.clientY, contentWrapper)
+//             // console.log(e)
+
+
+//         })
+
+
+//     })
+// })
