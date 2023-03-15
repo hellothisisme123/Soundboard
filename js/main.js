@@ -309,12 +309,12 @@ saveSoundBtn.addEventListener('click', (e) => {
 
     let allItems = store.getAll()
     allItems.onsuccess = () => {
-        soundItems.forEach(item => {
+        soundItems.forEach((item, i) => {
             item = {
                 'img': item.imgPath,
                 'title': item.title,
                 'audio': item.audioPath,
-                'order': allItems.result.length + 1
+                'order': i + 1
             }
             store.put(item)
     
@@ -389,8 +389,6 @@ class soundReorderThumb {
 
         const dragging = this.newReorderThumb.parentElement.querySelector('.dragging')
 
-        console.log(this.newReorderThumb)
-
         if (afterElement == null) {
             this.newReorderThumb.parentElement.appendChild(dragging)    
         } else {
@@ -408,6 +406,57 @@ class soundReorderThumb {
     dragEnd = (e) => {
         console.log('dragend');
         this.newReorderThumb.classList.remove('dragging')
+
+        // indexedDB variables
+        const db = request.result
+        const transaction = db.transaction('sounds', 'readwrite')
+        const store = transaction.objectStore('sounds')
+
+        // reorders in the backend
+        let allItems = [...this.newReorderThumb.parentElement.querySelectorAll('.soundItemThumb:not(.hidden)')]
+
+        let allDBItems = store.getAll()
+        allDBItems.onsuccess = () => {
+            let sortedItems = allDBItems.result
+            sortedItems = sortedItems.sort((a, b) => a.order - b.order)
+
+            allDBItems.result.forEach((item, i) => {
+                // maps the item data into a new version of it with a new order
+                let mappedItem = {
+                    'title': item.title,
+                    'audio': item.audio,
+                    'img': item.img,
+                    'order': allItems.indexOf(allItems.filter(x => x.querySelector('p').innerText == item.title)[0]) + 1
+                }
+
+                // pushes the order
+                store.put(mappedItem)
+            });
+            
+            // indexedDB variables
+            const db2 = request.result
+            const transaction2 = db2.transaction('sounds', 'readwrite')
+            const store2 = transaction2.objectStore('sounds')
+            
+            // the real sound items in the layout
+            const allRealItems = [...document.querySelectorAll('.soundItem:not(.innactive)')]
+
+            let newStore = store2.getAll()
+            newStore.onsuccess = () => {
+                // sorts the items by order
+                let sortedNewStore = newStore.result
+                sortedNewStore = sortedNewStore.sort((a, b) => a.order - b.order)
+
+                sortedNewStore.forEach((item, i) => {
+                    // finds the item according to the correct order
+                    let orderedItem = allRealItems.filter(x => x.querySelector('h1').innerText == item.title)[0]
+
+                    wrapper.appendChild(orderedItem)
+                })
+
+                wrapper.appendChild(addSoundsWrapper)
+            }
+        }
     }
 
     removeItem = () => {
@@ -420,31 +469,16 @@ class soundReorderThumb {
         const transaction = db.transaction('sounds', 'readwrite')
         const store = transaction.objectStore('sounds')
 
-        // changes the order of all items ahead of it
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
-        // WORKING HERE HERE HERE
+        // decrements the order of all succeeding items after the deleted one
+        let tmp = store.getAll()        
+        tmp.onsuccess = () => {
+            let deletedOrder = tmp.result.filter(x => x.title == this.title)[0].order
+            let laterItems = tmp.result.filter(x => x.order > deletedOrder)
+            laterItems.forEach(item => {
+                item.order--
+                store.put(item)
+            })
+        }
 
         // removes it from the database
         store.delete(this.title)
