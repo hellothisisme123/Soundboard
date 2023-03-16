@@ -112,6 +112,7 @@ request.onsuccess = () => {
             const transaction = db.transaction('sounds', 'readwrite')
             const store = transaction.objectStore('sounds')
 
+            
             store.put({
                 'title': 'Apple Notification',
                 'img': './production/images/Apple.png',
@@ -127,17 +128,66 @@ request.onsuccess = () => {
             })
 
             store.put({
+                'title': 'Modern Android Notification',
+                'img': './production/svg/Android_robot.svg',
+                'audio': '../production/sounds/modernAndroidNoti.mp3',
+                'order': 3
+            })
+
+            store.put({
                 'title': 'Windows 10 Notification',
                 'img': './production/svg/windowsLogo.svg',
                 'audio': '../production/sounds/windows10Noti.mp3',
-                'order': 3
+                'order': 4
             })
 
             store.put({
                 'title': 'Windows XP Error',
                 'img': './production/images/windowsXPLogo.png',
                 'audio': '../production/sounds/windowsXPError.mp3',
-                'order': 4
+                'order': 5
+            })
+
+            store.put({
+                'title': 'Discord Notification',
+                'img': './production/images/discord.png',
+                'audio': '../production/sounds/discordNoti.mp3',
+                'order': 6
+            })
+
+            store.put({
+                'title': 'Twitter Notification',
+                'img': './production/images/twitter.png',
+                'audio': '../production/sounds/twitterNoti.mp3',
+                'order': 7
+            })
+
+            store.put({
+                'title': 'Skype Call Sound',
+                'img': './production/images/skype.png',
+                'audio': '../production/sounds/skype.mp3',
+                'order': 8
+            })
+
+            store.put({
+                'title': 'Mr. Beast',
+                'img': './production/images/Mr_Beast.png',
+                'audio': '../production/sounds/mrbeast.mp3',
+                'order': 9
+            })
+
+            store.put({
+                'title': 'Beepbox Ringtone Synth',
+                'img': './production/images/SoundScape.png',
+                'audio': '../production/sounds/beepBox1.mp3',
+                'order': 10
+            })
+
+            store.put({
+                'title': 'Beepbox Ringtone Auroral',
+                'img': './production/images/SoundScape.png',
+                'audio': '../production/sounds/beepBox2.mp3',
+                'order': 11
             })
         }
 
