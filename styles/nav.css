@@ -53,18 +53,18 @@ nav .navBtn .bar {
     top: 100%;
 }
 
-nav .content .navBtn.active .bar1 {
+nav .navBtn.active .bar1 {
     rotate: 45deg;
     top: 50%;
 }
 
-nav .content .navBtn.active .bar2 {
+nav .navBtn.active .bar2 {
     opacity: 0;
     user-select: none;
     pointer-events: none;
 }
 
-nav .content .navBtn.active .bar3 {
+nav .navBtn.active .bar3 {
     rotate: -45deg;
     top: 50%;
 }
