@@ -273,6 +273,7 @@ html {
     justify-content: center;
     cursor: pointer;
     font-size: 1.15rem;    
+    padding: 0 0.3rem;
     transition: scale 0.4s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
